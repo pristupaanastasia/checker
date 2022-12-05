@@ -1,11 +1,11 @@
 package config
 
 import (
+	"checker/logger"
 	"context"
 	"encoding/json"
 	"errors"
 	"fmt"
-	"github.com/pristupaanastasia/checker/logger"
 	"io/ioutil"
 	"os"
 	"strconv"
@@ -27,11 +27,12 @@ func NewConfig(log logger.Log) (*Config, error) {
 
 	config = &Config{log: log}
 	err := config.Parse()
+	log.Info("Start config")
 	return config, err
 }
 
 func (c *Config) Update(ctx context.Context) {
-	ticker := time.Tick(30 * time.Second)
+	ticker := time.Tick(1 * time.Second)
 	for {
 		select {
 		case <-ticker:

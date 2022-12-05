@@ -1,13 +1,14 @@
 package main
 
 import (
+	config "checker/config"
+	"checker/logger"
+	"checker/model"
+	"checker/process"
+	"checker/stat"
+	"checker/telegram"
 	"context"
 	"github.com/gorilla/mux"
-	config "github.com/pristupaanastasia/checker/config"
-	"github.com/pristupaanastasia/checker/logger"
-	"github.com/pristupaanastasia/checker/model"
-	"github.com/pristupaanastasia/checker/process"
-	"github.com/pristupaanastasia/checker/telegram"
 	"net/http"
 
 	"os"
@@ -29,17 +30,17 @@ func main() {
 	}
 	bot, err := telegram.NewTg(conf, log)
 	if err != nil {
-		log.Fatal()
+		log.Fatal(err)
 	}
+	st := stat.NewStat()
 	ctx := context.Background()
-	checker := process.NewProcess(conf, bot, log)
+	checker := process.NewProcess(conf, bot, st, log)
 	go checker.Process(ctx)
-	handler := model.NewModel(conf, checker, bot, log)
+	handler := model.NewModel(conf, checker, bot, st, log)
 	r.HandleFunc("/status", handler.Status)
 	r.HandleFunc("/thread_count", handler.ThreadCount)
 	r.HandleFunc("/proxy_list_url", handler.ProxyListUrl)
 	r.HandleFunc("/proxy_list", handler.ProxyList)
-	r.HandleFunc("/check_url", handler.CheckUrl)
 	r.HandleFunc("/telegram_id", handler.TelegramId)
 	r.HandleFunc("/telegram_token", handler.TelegramToken)
 	r.HandleFunc("/logs", handler.Logs)

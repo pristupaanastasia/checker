@@ -1,8 +1,8 @@
 {
   "goroutine": 5,
   "url": "https://raw.githubusercontent.com/scidam/proxy-list/master/proxy.json",
-  "id-telegram": 3025859,
-  "token-tg": "5851649914:AAESIF4Uu-Ab2Nsnfo4b7sLJtdqGtOTQzag",
+  "id-telegram": 0,
+  "token-tg": "",
   "port": ":4000",
   "start-parser" : "on"
 }
