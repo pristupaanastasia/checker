@@ -83,8 +83,10 @@ func (c *Config) ParseJson() {
 
 	f, err := os.Open("config.json")
 	if err != nil {
+		c.log.Error(err)
 		return
 	}
+
 	buf, err := ioutil.ReadAll(f)
 	if err != nil {
 		return

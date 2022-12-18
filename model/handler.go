@@ -10,6 +10,8 @@ import (
 	"encoding/json"
 	"io/ioutil"
 	"net/http"
+	"strconv"
+	"time"
 )
 
 type Model struct {
@@ -61,7 +63,7 @@ func (m *Model) ProxyList(w http.ResponseWriter, r *http.Request) {
 
 		m.GetInfo(w, r, list)
 	case http.MethodPost:
-		list := map[string][]message.Proxy{}
+		list := map[string][]message.ProxyResult{}
 		if err := m.PostInfo(w, r, &list); err != nil {
 			m.log.Error(err)
 			return
@@ -114,13 +116,13 @@ func (m *Model) TelegramToken(w http.ResponseWriter, r *http.Request) {
 
 		m.GetInfo(w, r, token)
 	case http.MethodPost:
-		token := map[string]int64{}
+		token := map[string]string{}
 		if err := m.PostInfo(w, r, &token); err != nil {
 			m.log.Error(err)
 			return
 		}
 
-		m.conf.IdTelegram = token["token-tg"]
+		m.conf.TokenTg = token["token-tg"]
 		if err := m.bot.ReConnect(); err != nil {
 			m.log.Error(err)
 			w.WriteHeader(http.StatusBadRequest)
@@ -130,8 +132,9 @@ func (m *Model) TelegramToken(w http.ResponseWriter, r *http.Request) {
 	}
 }
 func (m *Model) Logs(w http.ResponseWriter, r *http.Request) {
-
-	file, err := ioutil.ReadFile("info.txt")
+	y, mn, d := time.Now().Date()
+	name := "/log/info" + strconv.Itoa(y) + "_" + mn.String() + "_" + strconv.Itoa(d) + ".txt"
+	file, err := ioutil.ReadFile(name)
 	if err != nil {
 		m.log.Error(err)
 	} else {

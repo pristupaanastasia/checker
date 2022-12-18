@@ -1,0 +1,12 @@
+version: "3.5"
+
+services:
+  checker:
+    build: .
+    restart: "unless-stopped"
+    ports:
+      - "4000:4000"
+    volumes:
+      - ./log:/log
+      - ./success.txt:/src/success.txt
+      - ./config.json:/src/config.json

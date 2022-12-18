@@ -149,6 +149,7 @@ func (ch *Checker) GetProxy(ctx context.Context, ip chan string, deleteip chan s
 			}
 			ch.stat.Speed()
 			if ch.conf.StartParser == OFF {
+				ch.status = STOPPED
 				return
 			}
 		}
@@ -200,10 +201,10 @@ func (ch *Checker) ProxyExist(ip string) bool {
 	ch.mu.Unlock()
 	return ok
 }
-func (ch *Checker) UpdateListProxy(list []message.Proxy) {
+func (ch *Checker) UpdateListProxy(list []message.ProxyResult) {
 	ch.mu.Lock()
 	for _, ip := range list {
-		ch.proxyList[ip.Ip] = true
+		ch.proxyList[ip.Url] = true
 	}
 	ch.mu.Unlock()
 }
